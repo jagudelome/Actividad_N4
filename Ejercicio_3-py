@@ -1,0 +1,109 @@
+import math
+import tkinter as tk
+from tkinter import messagebox
+
+class CalculosNumericos:
+    @staticmethod
+    def calcular_logaritmo_neperiano(valor: float) -> float:
+        if valor <= 0:
+            raise ArithmeticError(
+                "El valor debe ser un número positivo para calcular el logaritmo neperiano."
+            )
+        return math.log(valor)
+    @staticmethod
+    def calcular_raiz_cuadrada(valor: float) -> float:
+        if valor <= 0:
+            raise ArithmeticError(
+                "El valor debe ser un número positivo para calcular la raíz cuadrada."
+            )
+        return math.sqrt(valor)
+
+class VentanaCalculos(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Cálculos Numéricos")
+        self.geometry("380x270")
+        self.resizable(False, False)
+        tk.Label(
+            self, text="Cálculos Numéricos", font=("Arial", 13, "bold")
+        ).pack(pady=10)
+        frame_entrada = tk.Frame(self)
+        frame_entrada.pack(pady=5, padx=20)
+
+        tk.Label(
+            frame_entrada, text="Ingrese un valor numérico:", font=("Arial", 10)
+        ).grid(row=0, column=0, padx=5, pady=5)
+        self.entry_valor = tk.Entry(frame_entrada, width=18, font=("Arial", 10))
+        self.entry_valor.grid(row=0, column=1, padx=5, pady=5)
+        self.entry_valor.focus()
+        frame_botones = tk.Frame(self)
+        frame_botones.pack(pady=10)
+
+        tk.Button(
+            frame_botones,
+            text="Calcular",
+            command=self.calcular,
+            bg="#2196F3",
+            fg="white",
+            font=("Arial", 10, "bold"),
+            padx=12,
+        ).grid(row=0, column=0, padx=6)
+
+        tk.Button(
+            frame_botones,
+            text="Limpiar",
+            command=self.limpiar,
+            font=("Arial", 10),
+            padx=12,
+        ).grid(row=0, column=1, padx=6)
+
+        self.lbl_logaritmo = tk.Label(
+            self, text="Logaritmo neperiano: -", font=("Arial", 10)
+        )
+        self.lbl_logaritmo.pack(pady=5)
+
+        self.lbl_raiz = tk.Label(
+            self, text="Raíz cuadrada: -", font=("Arial", 10)
+        )
+        self.lbl_raiz.pack(pady=5)
+
+    def calcular(self):
+        texto = self.entry_valor.get().strip()
+
+        if not texto:
+            messagebox.showwarning(
+                "Campo vacío", "Por favor, ingrese un valor numérico."
+            )
+            return
+
+        try:
+            valor = float(texto)
+
+            res_log = CalculosNumericos.calcular_logaritmo_neperiano(valor)
+            res_raiz = CalculosNumericos.calcular_raiz_cuadrada(valor)
+
+            self.lbl_logaritmo.config(
+                text=f"Logaritmo neperiano: {res_log:.4f}"
+            )
+            self.lbl_raiz.config(text=f"Raíz cuadrada: {res_raiz:.4f}")
+
+        except ArithmeticError as e:
+            self.lbl_logaritmo.config(text="Logaritmo neperiano: Error")
+            self.lbl_raiz.config(text="Raíz cuadrada: Error")
+            messagebox.showerror("Excepción Aritmética", str(e))
+
+        except ValueError:
+            messagebox.showerror(
+                "Error de Entrada", "Debe ingresar un número válido."
+            )
+
+    def limpiar(self):
+        self.entry_valor.delete(0, tk.END)
+        self.lbl_logaritmo.config(text="Logaritmo neperiano: -")
+        self.lbl_raiz.config(text="Raíz cuadrada: -")
+        self.entry_valor.focus()
+
+
+if __name__ == "__main__":
+    app = VentanaCalculos()
+    app.mainloop()
